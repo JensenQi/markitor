@@ -1,5 +1,5 @@
 import fs from "fs";
-import store from '../store'
+import store from "../../store";
 import electron from 'electron'
 
 let dialog = electron.remote.dialog;

@@ -1,5 +1,5 @@
 import fs from "fs";
-import store from '../store'
+import store from "../../store";
 import electron from 'electron'
 
 let dialog = electron.remote.dialog;
@@ -17,7 +17,7 @@ let button = {
                 ]
             }) : store.state.article.fileName;
 
-            fs.writeFile(filename, store.state.article.content, err => {
+            fs.writeFile(filename, store.getters.content_with_style, err => {
                 if (err) {
                     console.log("保存文件出错" + err.message.toString())
                 } else {
