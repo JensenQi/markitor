@@ -1,0 +1,10 @@
+{
+    "qiniu": {
+        "active": true,
+        "accessKey": "七牛账号的 access key",
+        "secretKey": "七牛账号的 secret key",
+        "scope": "七牛的存储空间名字",
+        "uploadEndpoint": "上传终端",
+        "cdnUrl": "存储空间域名"
+    }
+}
