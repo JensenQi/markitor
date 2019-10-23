@@ -1,14 +1,7 @@
 import CryptoJS from 'crypto-js';
+import _config from '../../../config';
 
-let accessKey = '配置化';
-let secretKey = '配置化';
-let putPolicy = {
-    scope: '配置化',
-    deadline: Date.parse(new Date()) / 1000 + 3600
-};
-let uploadEndpoint = '配置化';
-let cdnUrl = '配置化';
-
+let config = _config.qiniu;
 
 let safe64 = base64 => base64.replace(/\+/g, "-").replace(/\//g, "_");
 
@@ -67,12 +60,15 @@ let utf16to8 = str => {
  * @returns token 字符串
  */
 let genUpToken = () => {
-    let put_policy = JSON.stringify(putPolicy);
+    let put_policy = JSON.stringify({
+        scope: config.scope,
+        deadline: Date.parse(new Date()) / 1000 + 3600
+    });
     let encoded = base64encode(utf16to8(put_policy));
-    let hash = CryptoJS.HmacSHA1(encoded, secretKey);
+    let hash = CryptoJS.HmacSHA1(encoded, config.secretKey);
     let encoded_signed = hash.toString(CryptoJS.enc.Base64);
 
-    return `${accessKey}:${safe64(encoded_signed)}:${encoded}`;
+    return `${config.accessKey}:${safe64(encoded_signed)}:${encoded}`;
 };
 
 /**
@@ -97,13 +93,13 @@ let fileSize = str => {
 let putb64 = (picBase, callback) => {
     picBase = picBase.substring(22); // 去掉 'data:image/png;base64,'
 
-    let url = `${uploadEndpoint}/${fileSize(picBase)}`;
+    let url = `${config.uploadEndpoint}/${fileSize(picBase)}`;
     let xhr = new XMLHttpRequest();
     let token = genUpToken();
     xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
             let keyText = eval(`(${xhr.responseText})`);
-            let picUrl = `${cdnUrl}/${keyText.key}`;
+            let picUrl = `${config.cdnUrl}/${keyText.key}`;
             callback(picUrl);
         }
     };
