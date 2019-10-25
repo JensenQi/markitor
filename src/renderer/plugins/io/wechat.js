@@ -1,7 +1,8 @@
 import store from "../../store";
 import electron from 'electron'
 import juice from 'juice'
-
+import co from 'co';
+import putb64 from './qiniu';
 
 let icon = `
 <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
@@ -29,6 +30,7 @@ let icon = `
 `;
 
 
+
 let button = {
     register: editor => {
         editor.ui.registry.addIcon('wechat', icon);
@@ -36,7 +38,23 @@ let button = {
             icon: 'wechat',
             tooltip: '复制到微信',
             onAction: () => {
-                electron.clipboard.writeHTML(juice(store.getters.content_with_style));
+                let html = juice(store.getters.content_with_style);
+                let latexImgReg = /<img class="tinymce-latex".*?(?:>|\/>)/gi;
+                let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+
+                co(function* () {
+                    yield html.match(latexImgReg).map(imgDom =>{
+                        let src = imgDom.match(srcReg)[1];
+                        return new Promise((resolve, reject) => {
+                            putb64(src, url => {
+                                html = html.replace(src, url);
+                                resolve()
+                            })
+                        })
+                    });
+                }).then(() =>{
+                    electron.clipboard.writeHTML(html);
+                });
             }
         });
     }
