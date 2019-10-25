@@ -54,6 +54,10 @@ let button = {
                     });
                 }).then(() =>{
                     electron.clipboard.writeHTML(html);
+                    window.vm.$Notice.success({
+                        title: '复制到粘贴板成功',
+                        desc: '现在你可以前往公众号编辑界面 ctrl-v 了',
+                    });
                 });
             }
         });
