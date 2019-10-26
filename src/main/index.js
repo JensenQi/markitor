@@ -1,6 +1,8 @@
-import {app, BrowserWindow} from 'electron'
+import {app, BrowserWindow, Menu} from 'electron'
+import template from './menu';
 
-const dialog = require('electron').dialog;
+const electron = require('electron')
+const dialog = electron.dialog;
 
 /**
  * Set `__static` path to static files in production
@@ -15,6 +17,7 @@ const winURL = process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`
 
+
 function createWindow() {
     /**
      * Initial window options
@@ -28,6 +31,8 @@ function createWindow() {
     mainWindow.loadURL(winURL);
     mainWindow.webContents.openDevTools();
 
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
 
     mainWindow.on('close', (even) => {
         // dialog.showErrorBox('even', 'windows-close');
