@@ -30,37 +30,43 @@ let icon = `
 `;
 
 
-
 let button = {
     register: editor => {
+
+        let action = () => {
+            let html = juice(store.getters.content_with_style);
+            let latexImgReg = /<img class="tinymce-latex".*?(?:>|\/>)/gi;
+            let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+
+            co(function* () {
+                yield html.match(latexImgReg).map(imgDom => {
+                    let src = imgDom.match(srcReg)[1];
+                    return new Promise((resolve, reject) => {
+                        putb64(src, url => {
+                            html = html.replace(src, url);
+                            resolve()
+                        })
+                    })
+                });
+            }).then(() => {
+                electron.clipboard.writeHTML(html);
+                window.vm.$Notice.success({
+                    title: '复制到粘贴板成功',
+                    desc: '现在你可以前往公众号编辑界面 ctrl-v 了',
+                });
+            });
+        };
+
+        // 注册工具栏按钮
         editor.ui.registry.addIcon('wechat', icon);
         editor.ui.registry.addButton('wechat', {
             icon: 'wechat',
             tooltip: '复制到微信',
-            onAction: () => {
-                let html = juice(store.getters.content_with_style);
-                let latexImgReg = /<img class="tinymce-latex".*?(?:>|\/>)/gi;
-                let srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-
-                co(function* () {
-                    yield html.match(latexImgReg).map(imgDom =>{
-                        let src = imgDom.match(srcReg)[1];
-                        return new Promise((resolve, reject) => {
-                            putb64(src, url => {
-                                html = html.replace(src, url);
-                                resolve()
-                            })
-                        })
-                    });
-                }).then(() =>{
-                    electron.clipboard.writeHTML(html);
-                    window.vm.$Notice.success({
-                        title: '复制到粘贴板成功',
-                        desc: '现在你可以前往公众号编辑界面 ctrl-v 了',
-                    });
-                });
-            }
+            onAction: action
         });
+
+        // 注册命令
+        editor.addCommand('wechat', action);
     }
 };
 

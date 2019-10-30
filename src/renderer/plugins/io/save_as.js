@@ -17,27 +17,35 @@ let icon = `
 
 
 let button = {
-    register: (editor, onAction) => {
+    register: editor => {
+
+        let openDialog = () => {
+            let filename = dialog.showSaveDialog({
+                filters: [
+                    {name: 'HTML', extensions: ['html']},
+                    // todo
+                    // {name: 'Markdown', extensions: ['md']},
+                    // {name: 'PDF', extensions: ['pdf']},
+                    // {name: '图片', extensions: ['jpg', 'png']},
+                ]
+            });
+            fs.writeFile(filename, store.getters.content_with_style, err => {
+                if (err) {
+                    console.log("保存文件出错" + err.message.toString())
+                }
+            });
+        };
+
+        // 注册工具栏按钮
         editor.ui.registry.addIcon('save_as', icon);
         editor.ui.registry.addButton('save_as', {
             icon: 'save_as',
             tooltip: '另存为',
-            onAction: () => {
-                let filename = dialog.showSaveDialog({
-                    filters: [
-                        {name: 'HTML', extensions: ['html']},
-                        // {name: 'Markdown', extensions: ['md']},
-                        // {name: 'PDF', extensions: ['pdf']},
-                        // {name: '图片', extensions: ['jpg', 'png']},
-                    ]
-                });
-                fs.writeFile(filename, store.getters.content_with_style, err => {
-                    if (err) {
-                        console.log("保存文件出错" + err.message.toString())
-                    }
-                });
-            }
+            onAction: openDialog
         });
+
+        // 注册命令
+        editor.addCommand('save_as', openDialog);
     }
 };
 

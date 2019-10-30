@@ -34,20 +34,26 @@ let icon = `
 
 let button = {
     register: editor => {
+        let openDialog = () => {
+            let filename = dialog.showOpenDialog({
+                properties: ['openFile'],
+                filters: [{name: '仅支持md/HTML', extensions: ['md', 'html']}]
+            })[0];
+            let content = fs.readFileSync(filename, 'utf-8');
+            store.commit('setArticleFileName', filename);
+            store.commit('setArticleContent', content);
+        };
+
+        // 注册工具栏按钮
         editor.ui.registry.addIcon('open_file', icon);
         editor.ui.registry.addButton('open_file', {
             icon: 'open_file',
             tooltip: '打开文件',
-            onAction: () => {
-                let filename = dialog.showOpenDialog({
-                    properties: ['openFile'],
-                    filters: [{name: '仅支持md/HTML', extensions: ['md', 'html']}]
-                })[0];
-                let content = fs.readFileSync(filename, 'utf-8');
-                store.commit('setArticleFileName', filename);
-                store.commit('setArticleContent', content);
-            }
+            onAction: openDialog
         });
+
+        // 注册命令
+        editor.addCommand('open_file', openDialog);
     }
 };
 
