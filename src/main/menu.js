@@ -1,25 +1,55 @@
 import {app, BrowserWindow} from "electron";
+import robot from 'robotjs'
 
-const electron = require('electron')
+const electron = require('electron');
+
+let log = msg => electron.dialog.showErrorBox('debug', msg.toString())
 
 let template = [
     {
         label: '文件',
         submenu: [
             {
-                label: '新建文件'
+                label: '打开文件',
+                accelerator: 'CmdOrCtrl+O',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('open_file');
+                    `)
+
+                }
             },
             {
-                label: '打开文件'
+                label: '新建文件',
+                accelerator: 'CmdOrCtrl+N',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('new_file');
+                    `)
+                }
             },
             {
-                label: '保存'
+                label: '保存',
+                accelerator: 'CmdOrCtrl+S',
+                click:() =>{
+                    robot.keyTap('s', 'control');
+                }
             },
             {
-                label: '另存为'
+                label: '另存为',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('save_as');
+                    `)
+                }
             },
             {
-                label: '复制到粘贴板'
+                label: '复制到粘贴板',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('wechat');
+                    `)
+                }
             },
             {
                 label: '打印'
@@ -74,7 +104,7 @@ let template = [
 
             {
                 label: '字体',
-                submenu:[
+                submenu: [
                     {
                         label: '加粗'
                     },
@@ -95,7 +125,7 @@ let template = [
                     },
                     {
                         label: '字号',
-                        submenu:[
+                        submenu: [
                             {
                                 label: 'small'
                             },
@@ -137,7 +167,7 @@ let template = [
         submenu: [
             {
                 label: '标题',
-                submenu:[
+                submenu: [
                     {
                         label: '一级标题'
                     },
@@ -175,7 +205,7 @@ let template = [
             },
             {
                 label: '列表',
-                submenu:[
+                submenu: [
                     {
                         label: '有序列表'
                     },
