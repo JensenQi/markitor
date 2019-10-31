@@ -1,5 +1,3 @@
-import {Input} from 'iview'
-
 let TAG_NAME = 'tinymce-latex';
 let formula;
 let formulaDom;
@@ -39,13 +37,10 @@ let renderTex = formula => {
     }
 };
 
-let plugin = (editor, url) => {
-
+let plugin = editor => {
 
     let openDialog = () => {
-
         let node = editor.selection.getNode();
-
         window.vm.$Modal.confirm({
             title: "插入公式",
             width: '60%',
@@ -54,7 +49,7 @@ let plugin = (editor, url) => {
 
                 } else {
                     formulaDom.removeAttribute('id');
-                    formulaDom.setAttribute('style', 'vertical-align: middle');
+                    formulaDom.setAttribute('style', 'vertical-align: middle;margin-left:5px;margin-right:5px');
                     formulaDom.setAttribute('class', TAG_NAME);
                     editor.selection.setNode(formulaDom)
                 }
@@ -75,10 +70,11 @@ let plugin = (editor, url) => {
             },
             render: h => {
                 return h('div', [
-                    h(Input, {
+                    h('Input', {
                         props: {
                             type: 'textarea',
                             placeholder: '输入LaTeX公式',
+                            autofocus: true,
                             autosize: {
                                 minRows: 5,
                                 maxRows: 20
@@ -104,11 +100,10 @@ let plugin = (editor, url) => {
                 ])
             }
         })
-
-
     };
 
 
+    // 监听双击事件
     editor.on('dblclick', e => {
         if (e.target.className === TAG_NAME) {
             formula = e.target.getAttribute('alt');
@@ -118,22 +113,22 @@ let plugin = (editor, url) => {
     });
 
 
+    // 注册工具栏按钮
     editor.ui.registry.addIcon('formula', '<svg version="1.1" id="Capa_1" xmlns="http//www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"> <path d="M263.507,62.967C265.179,51.833,272.833,40,283.729,40c11.028,0,20,8.972,20,20h40c0-33.084-26.916-60-60-60 c-33.629,0-55.527,28.691-59.784,57.073L211.083,144h-61.354v40h55.436l-39.22,265.073l-0.116,0.937 c-1.063,10.62-9.393,21.99-20.1,21.99c-11.028,0-20-8.972-20-20h-40c0,33.084,26.916,60,60,60 c33.661,0,56.771-29.141,59.848-57.496L245.6,184h60.129v-40h-54.211L263.507,62.967z"/> <polygon points="426.271,248 378.236,248 352.249,287.085 334.923,248 291.17,248 325.997,326.569 270.523,410 318.558,410 345.21,369.915 362.979,410 406.732,410 371.462,330.431 \t\t"/> </svg>');
-
     editor.ui.registry.addButton('latex', {
         icon: 'formula',
         tooltip: 'LaTeX公式',
-        onAction: () => {
-            openDialog();
-        }
+        onAction: openDialog
     });
 
+    // 注册菜单栏按钮
     editor.ui.registry.addMenuItem('latex', {
         text: '菜单栏名称',
-        onAction: () => {
-            openDialog();
-        }
+        onAction: openDialog
     });
+
+    // 注册命令
+    editor.addCommand('latex', openDialog);
 
 };
 
