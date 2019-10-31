@@ -2,11 +2,29 @@ import hljs from 'highlight.js/lib/highlight';
 import javascript from 'highlight.js/lib/languages/javascript';
 import python from 'highlight.js/lib/languages/python';
 import java from 'highlight.js/lib/languages/java';
+import sql from 'highlight.js/lib/languages/sql';
+import kotlin from 'highlight.js/lib/languages/kotlin';
+import cpp from 'highlight.js/lib/languages/cpp';
+import cs from 'highlight.js/lib/languages/cs';
+import xml from 'highlight.js/lib/languages/xml';
+import css from 'highlight.js/lib/languages/css';
+import ruby from 'highlight.js/lib/languages/ruby';
+import scala from 'highlight.js/lib/languages/scala';
+import php from 'highlight.js/lib/languages/php';
 
 
 hljs.registerLanguage('javascript', javascript);
 hljs.registerLanguage('python', python);
 hljs.registerLanguage('java', java);
+hljs.registerLanguage('sql', sql);
+hljs.registerLanguage('kotlin', kotlin);
+hljs.registerLanguage('cpp', cpp);
+hljs.registerLanguage('cs', cs);
+hljs.registerLanguage('xml', xml);
+hljs.registerLanguage('css', css);
+hljs.registerLanguage('ruby', ruby);
+hljs.registerLanguage('scala', scala);
+hljs.registerLanguage('php', php);
 
 let languages = [
     {text: 'Python', value: 'python'},
@@ -137,7 +155,7 @@ let languages = [
     pluginManager.add('highlight', editor => {
         registerCommand(editor);
 
-        editor.settings.content_css = 'src/renderer/plugins/code/css/monokai.css';
+        editor.settings.content_css = 'static/highlight/monokai.css';
 
         editor.on('dblclick', ev => {
             if (isCodeSample(ev.target)) {
