@@ -31,7 +31,7 @@ let template = [
             {
                 label: '保存',
                 accelerator: 'CmdOrCtrl+S',
-                click:() =>{
+                click: () => {
                     robot.keyTap('s', 'control');
                 }
             },
@@ -52,11 +52,18 @@ let template = [
                 }
             },
             {
-                label: '打印'
+                label: '打印',
+                accelerator: 'CmdOrCtrl+P',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('mcePrint');
+                    `)
+                }
+
             },
             {
                 label: '退出',
-                accelerator: 'CmdOrCtrl+W',
+                accelerator: 'CmdOrCtrl+Q',
                 role: 'close'
             },
 
@@ -72,7 +79,7 @@ let template = [
             },
             {
                 label: '重做',
-                accelerator: 'Shift+CmdOrCtrl+Z',
+                accelerator: 'CmdOrCtrl+Y',
                 role: 'redo'
             },
             {
@@ -106,34 +113,71 @@ let template = [
                 label: '字体',
                 submenu: [
                     {
-                        label: '加粗'
+                        label: '加粗',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('bold');
+                            `)
+                        }
                     },
                     {
-                        label: '斜体'
+                        label: '斜体',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('italic');
+                            `)
+                        }
                     },
                     {
-                        label: '下划线'
+                        label: '下划线',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('underline');
+                            `)
+                        }
                     },
                     {
-                        label: '删除线'
+                        label: '删除线',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('strikethrough');
+                            `)
+                        }
                     },
                     {
-                        label: '前景色'
+                        label: '前景色',
+                        enabled: false
                     },
                     {
-                        label: '背景色'
+                        label: '背景色',
+                        enabled: false
                     },
                     {
                         label: '字号',
                         submenu: [
                             {
-                                label: 'small'
+                                label: '大',
+                                click: (item, focusedWindow) => {
+                                    focusedWindow.webContents.executeJavaScript(`
+                                        tinymce.activeEditor.execCommand('fontsize', false, 7);
+                                    `)
+                                }
                             },
                             {
-                                label: 'media'
+                                label: '中',
+                                click: (item, focusedWindow) => {
+                                    focusedWindow.webContents.executeJavaScript(`
+                                        tinymce.activeEditor.execCommand('fontsize', false, 5);
+                                    `)
+                                }
                             },
                             {
-                                label: 'large'
+                                label: '小',
+                                click: (item, focusedWindow) => {
+                                    focusedWindow.webContents.executeJavaScript(`
+                                        tinymce.activeEditor.execCommand('fontsize', false, 3);
+                                    `)
+                                }
                             }
                         ]
                     },
@@ -148,13 +192,29 @@ let template = [
                 label: '对齐',
                 submenu: [
                     {
-                        label: '左对齐'
+                        label: '左对齐',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('JustifyLeft');
+                            `)
+                        }
+
                     },
                     {
-                        label: '居中对齐'
+                        label: '居中对齐',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('JustifyCenter');
+                            `)
+                        }
                     },
                     {
-                        label: '右对齐'
+                        label: '右对齐',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('JustifyRight');
+                            `)
+                        }
                     },
                 ]
             },
@@ -186,31 +246,68 @@ let template = [
                 ]
             },
             {
-                label: 'LaTeX'
+                label: '引用',
+                click: (item, focusedWindow) => {
+
+                }
+
             },
             {
-                label: '代码'
+                label: 'LaTeX',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('latex');
+                    `)
+                }
             },
             {
-                label: '流程图'
+                label: '代码',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('highlight');
+                    `)
+                }
             },
             {
-                label: '图片'
+                label: '流程图',
+                enabled: false
             },
             {
-                label: '超链接'
+                label: '图片',
+                enabled: false
             },
             {
-                label: '表格'
+                label: '超链接',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('mcelink');
+                    `)
+                }
+
+            },
+            {
+                label: '表格',
+                enabled: false
             },
             {
                 label: '列表',
                 submenu: [
                     {
-                        label: '有序列表'
+                        label: '有序列表',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('InsertOrderedList');
+                            `)
+                        }
+
                     },
                     {
-                        label: '无序列表'
+                        label: '无序列表',
+                        click: (item, focusedWindow) => {
+                            focusedWindow.webContents.executeJavaScript(`
+                                tinymce.activeEditor.execCommand('InsertUnorderedList');
+                            `)
+                        }
                     },
                     {
                         label: 'todo 列表'
@@ -226,14 +323,27 @@ let template = [
         label: '视图',
         submenu: [
             {
-                label: '工具栏'
+                label: '源代码',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('mceCodeEditor');
+                    `)
+
+                }
+            },
+            {
+                label: '预览',
+                click: (item, focusedWindow) => {
+                    focusedWindow.webContents.executeJavaScript(`
+                        tinymce.activeEditor.execCommand('mcePreview');
+                    `)
+                }
             },
             {
                 label: '重载',
                 accelerator: 'CmdOrCtrl+R',
                 click: function (item, focusedWindow) {
                     if (focusedWindow) {
-                        // 重载之后, 刷新并关闭所有的次要窗体
                         if (focusedWindow.id === 1) {
                             BrowserWindow.getAllWindows().forEach(function (win) {
                                 if (win.id > 1) {
@@ -247,13 +357,7 @@ let template = [
             },
             {
                 label: '切换全屏',
-                accelerator: (function () {
-                    if (process.platform === 'darwin') {
-                        return 'Ctrl+Command+F'
-                    } else {
-                        return 'F11'
-                    }
-                })(),
+                accelerator: 'F11',
                 click: function (item, focusedWindow) {
                     if (focusedWindow) {
                         focusedWindow.setFullScreen(!focusedWindow.isFullScreen())
@@ -262,55 +366,13 @@ let template = [
             },
             {
                 label: '切换开发者工具',
-                accelerator: (function () {
-                    if (process.platform === 'darwin') {
-                        return 'Alt+Command+I'
-                    } else {
-                        return 'Ctrl+Shift+I'
-                    }
-                })(),
+                accelerator: 'F12',
                 click: function (item, focusedWindow) {
                     if (focusedWindow) {
                         focusedWindow.toggleDevTools()
                     }
                 }
             },
-            {
-                type: 'separator'
-            },
-            {
-                label: '应用程序菜单演示',
-                click: function (item, focusedWindow) {
-                    if (focusedWindow) {
-                        const options = {
-                            type: 'info',
-                            title: '应用程序菜单演示',
-                            buttons: ['好的'],
-                            message: '此演示用于 "菜单" 部分, 展示如何在应用程序菜单中创建可点击的菜单项.'
-                        }
-                        electron.dialog.showMessageBox(focusedWindow, options, function () {
-                        })
-                    }
-                }
-            },
-            {
-                label: '最小化',
-                accelerator: 'CmdOrCtrl+M',
-                role: 'minimize'
-            },
-
-            {
-                type: 'separator'
-            },
-            {
-                label: '重新打开窗口',
-                accelerator: 'CmdOrCtrl+Shift+T',
-                enabled: false,
-                key: 'reopenMenuItem',
-                click: function () {
-                    app.emit('activate')
-                }
-            }
         ]
     },
 
@@ -319,16 +381,24 @@ let template = [
         role: 'help',
         submenu: [
             {
-                label: '关于'
-            },
-            {
-                label: '学习更多',
-                click: function () {
-                    electron.shell.openExternal('http://electron.atom.io')
+                label: '关于',
+                click: (item, focusedWindow) => {
+                    const options = {
+                        type: 'info',
+                        title: 'markitor',
+                        buttons: ['好的'],
+                        message: 'Version: 0.0.1\nAuthor: Jensen\nLicense: Apache2.0'
+                    };
+                    electron.dialog.showMessageBox(focusedWindow, options, () => {
+                    })
                 }
+
             },
             {
-                label: '语法'
+                label: '使用指南',
+                click: () => {
+                    electron.shell.openExternal('https://github.com/JensenQi/markitor')
+                }
             },
             {
                 label: '检查更新'
