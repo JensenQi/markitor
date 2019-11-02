@@ -1,26 +1,35 @@
+import fs from 'fs'
+
 const state = {
-    article: {
-        fileName: null,
-        content: '',
-        type: 'html'
+    fileName: null,
+    content: '',
+    type: 'html',
+};
+
+const getters = {
+    content_with_style: state => {
+        let css = `<style>${fs.readFileSync('static/highlight/monokai.css', 'utf-8')}</style>`;
+        let idx = state.content.indexOf('<head>') + 6;
+        return state.content.substring(0, idx) + css + state.content.substring(idx);
     }
 };
 
 const mutations = {
     setArticleType(state, type) {
-        state.article.type = type;
+        state.type = type;
     },
 
     setArticleFileName(state, fileName) {
-        state.article.fileName = fileName
+        state.fileName = fileName
     },
 
     setArticleContent(state, content) {
-        state.article.content = content
+        state.content = content
     },
 };
 
 export default {
     state,
+    getters,
     mutations
 };
