@@ -15,6 +15,11 @@ let code_pattern = [
     {text: '```java', value: '```java'},
 ];
 
+let latex_pattern = [
+    {text: '$inline', value: ''},
+    {text: '$$block', value: ''},
+];
+
 let button = {
     register: editor => {
         editor.ui.registry.addAutocompleter('colors', {
@@ -43,6 +48,33 @@ let button = {
             columns: 1,
             fetch: function (pattern) {
                 let matchedChars = code_pattern.filter(function (char) {
+                    return char.text.indexOf(pattern) !== -1;
+                });
+                return new tinymce.util.Promise(function (resolve) {
+                    let results = matchedChars.map(function (char) {
+                        return {
+                            value: char.value,
+                            text: char.text,
+                        }
+                    });
+                    resolve(results);
+                });
+            },
+            onAction: function (autocompleteApi, rng, value) {
+                editor.selection.setRng(rng);
+                editor.insertContent(value);
+                autocompleteApi.hide();
+                robot.keyTap("enter");
+            }
+        });
+
+
+        editor.ui.registry.addAutocompleter('latex', {
+            ch: '$',
+            minChars: 0,
+            columns: 1,
+            fetch: function (pattern) {
+                let matchedChars = latex_pattern.filter(function (char) {
                     return char.text.indexOf(pattern) !== -1;
                 });
                 return new tinymce.util.Promise(function (resolve) {
